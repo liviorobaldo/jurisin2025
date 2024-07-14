@@ -3,7 +3,7 @@ This is the GitHub repository associated with the paper "On the interplay betwee
 </p>
 
 <p align="justify">
-This repository contains the computational ontology proposed in the paper as well as all examples shown and discussed therein. This ontology extends <a href="https://github.com/liviorobaldo/conflict-tolerantDeonticTraditionalScheme">the ontology defined in this other GitHub repository</a>. Therefore, the reader, besides downloading the files from this GitHub, must also download the file:
+This repository contains the computational ontology proposed in the paper as well as all examples shown and discussed therein. This ontology extends <a href="https://github.com/liviorobaldo/conflict-tolerantDeonticTraditionalScheme">the ontology defined in this other GitHub repository</a>. Therefore,besides downloading the files from this GitHub, you must also download the file:
 </p>
 <p align="center">
   <a href="https://github.com/liviorobaldo/conflict-tolerantDeonticTraditionalScheme/blob/main/ctDTS.ttl">https://github.com/liviorobaldo/conflict-tolerantDeonticTraditionalScheme/blob/main/ctDTS.ttl</a>
