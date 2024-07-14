@@ -1,0 +1,62 @@
+@prefix : <https://w3id.org/ontology/conflict-tolerantdeontictraditionalscheme#> .
+@prefix : <https://w3id.org/ontology/conflict-tolerantdeontictraditionalscheme#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix soa: <https://w3id.org/ontology/conflict-tolerantdeontictraditionalscheme/soa#> .
+@base <https://w3id.org/ontology/conflict-tolerantdeontictraditionalscheme#> .
+
+
+########################################################################################################################################
+# Description:
+#---------------------------------------------------------------------------------------------------------------------------------------
+#
+#  This example contains an obligation and a fact:
+#  - (1) "John's paying of €118 to Bill" is equivalent to "John's paying of €118 to Bill"
+#  - (2) "John is obliged to pay £100 to Bill."
+#  - (3) "John pays €118 to Bill".
+#
+#  From (1) and (2), the third rule in the file VaP.ttl infers that (4) "John is obliged to pay £118 to Bill". Then, the rules from
+#  the file ctDTS.ttl infer that (4) is complied with by (3). Finally, the fourth rule in the file VaP.ttl infers that also (2) is
+#  complied with by (3).
+#
+########################################################################################################################################
+
+
+########################################################################################################################################
+# Eventuality types and thematic roles
+########################################################################################################################################
+
+soa:Pay rdf:type rdfs:Class, :Eventuality.
+soa:Own rdf:type rdfs:Class, :Eventuality.
+soa:Leave rdf:type rdfs:Class, :Eventuality.
+soa:has-agent rdf:type rdf:Property, :ThematicRole.
+soa:has-object rdf:type rdf:Property, :ThematicRole.
+soa:has-instrument rdf:type rdf:Property, :ThematicRole.
+soa:has-recipient rdf:type rdf:Property, :ThematicRole.
+
+########################################################################################################################################
+# Input facts:
+########################################################################################################################################
+
+#John's paying of €118 to Bill is equivalent to John's paying of £100 to Bill.
+soa:epoj2 rdf:type soa:Pay; soa:has-agent soa:John; soa:has-object soa:118euros; soa:has-recipient soa:Bill; :is-equivalent-to soa:epoj.
+soa:epoj rdf:type soa:Pay; soa:has-agent soa:John; soa:has-object soa:100pounds; soa:has-recipient soa:Bill.
+
+#John is obliged to pay £100 to Bill
+soa:epoj rdf:type :Obligatory.
+
+#If John does not pay £100 to Bill, this penalty applies: John is obliged to leave Bill's house.
+soa:epoj :has-penalty soa:pepoj.
+soa:pepoj rdf:type soa:Leave; soa:has-agent soa:John; soa:has-object soa:BillApt.
+[rdf:type :true; rdf:subject soa:pepoj; rdf:predicate rdf:type; rdf:object :Obligatory].
+
+#If John is obliged to leave Bill's house and he does not, this penalty applies: John is obliged to do something "to be decided"
+#(by a judge or by another appointed authority)
+soa:pepoj :has-penalty soa:ppepoj.
+soa:ppepoj rdf:type :TBD.
+[rdf:type :true; rdf:subject soa:ppepoj; rdf:predicate rdf:type; rdf:object :Obligatory].
+
+#John pays €118 to Bill.
+soa:epj rdf:type :Rexist, soa:Pay; soa:has-agent soa:John; soa:has-object soa:118euros; soa:has-recipient soa:Bill.

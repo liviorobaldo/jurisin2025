@@ -1,0 +1,46 @@
+@prefix : <https://w3id.org/ontology/conflict-tolerantdeontictraditionalscheme#> .
+@prefix : <https://w3id.org/ontology/conflict-tolerantdeontictraditionalscheme#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix soa: <https://w3id.org/ontology/conflict-tolerantdeontictraditionalscheme/soa#> .
+@base <https://w3id.org/ontology/conflict-tolerantdeontictraditionalscheme#> .
+
+
+########################################################################################################################################
+# Description:
+#---------------------------------------------------------------------------------------------------------------------------------------
+#
+#  This example contains an obligation and a fact:
+#  - (1) "John is obliged to pay £100"
+#  - (2) "Jack pays £100 in cash"
+#  It is inferred that (1) is complied with by (2)
+#
+#  This inference is carried out through the rules originally in:
+#  https://github.com/liviorobaldo/conflict-tolerantDeonticTraditionalScheme/blob/main/ctDTS.ttl
+#  In other words: it is not part of the JURISIN 2025 paper's novel content. It is just to "warm up"...
+#
+########################################################################################################################################
+
+
+########################################################################################################################################
+# Eventuality types and thematic roles
+########################################################################################################################################
+
+soa:Pay rdf:type rdfs:Class, :Eventuality.
+soa:has-agent rdf:type rdf:Property, :ThematicRole.
+soa:has-object rdf:type rdf:Property, :ThematicRole.
+soa:has-instrument rdf:type rdf:Property, :ThematicRole.
+
+
+########################################################################################################################################
+# Input facts:
+########################################################################################################################################
+
+#John is obliged to pay £100
+soa:epoj rdf:type :Obligatory, soa:Pay; soa:has-agent soa:John; soa:has-object soa:100pounds.
+
+#John pays £100 in cash:
+soa:epj rdf:type :Rexist, soa:Pay; soa:has-agent soa:John; soa:has-object soa:100pounds; soa:has-instrument soa:cash.
+

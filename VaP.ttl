@@ -1,0 +1,41 @@
+@prefix : <https://w3id.org/ontology/conflict-tolerantdeontictraditionalscheme#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@base <https://w3id.org/ontology/conflict-tolerantdeontictraditionalscheme#> .
+
+#If an obligation instantiates a more abstract eventuality that does not really exist, then the obligation is violated by that eventuality.
+[rdf:type :InferenceRule;
+	:has-sparql-code """CONSTRUCT{[rdf:type :true,:hold; rdf:subject ?eo; rdf:predicate rdf:type; rdf:object :Obligatory] :is-violated-by ?r}
+						WHERE{?eo rdf:type :Obligatory, ?c. ?e rdf:type ?c. ?c rdf:type :Eventuality.
+							  ?r rdf:type :false,:hold; rdf:subject ?e; rdf:predicate rdf:type; rdf:object :Rexist.
+							  NOT EXISTS{?tr rdf:type :ThematicRole. ?e ?tr ?vo. NOT EXISTS{?eo ?tr ?ve}}
+							  NOT EXISTS{?tr rdf:type :ThematicRole. ?e ?tr ?vo. ?eo ?tr ?ve. FILTER(?vo!=?ve)}
+							  NOT EXISTS{[rdf:type :true,:hold; rdf:subject ?eo; rdf:predicate rdf:type; rdf:object :Obligatory] :is-violated-by ?r}}"""^^xsd:string].
+										 
+										 
+#The RDF property :has-penalty associates obligations with other obligations. The class TBD is the set of all currently unknown penalties.
+:has-penalty rdf:type rdf:Property; rdfs:domain :Obligatory; rdfs:range :Obligatory.
+:TBD rdf:type rdfs:Class; rdfs:subClassOf :Eventuality.
+
+#If an obligation is violated, then its associated penalty holds obligatory.
+[rdf:type :InferenceRule;
+	:has-sparql-code """CONSTRUCT{?r2 rdf:type :hold}
+						WHERE{?r1 :is-violated-by ?e; rdf:type :true,:hold; rdf:subject ?eo; rdf:predicate rdf:type; rdf:object :Obligatory.
+							  ?eo :has-penalty ?p. ?r2 rdf:type :true; rdf:subject ?p; rdf:predicate rdf:type; rdf:object :Obligatory}"""^^xsd:string].
+
+
+#The modality holding on an eventuality also holds on all eventualities reachable from the former through a chain of is-equivalent-to properties.
+[rdf:type :InferenceRule;
+	:has-sparql-code """CONSTRUCT{?e2 rdf:type ?m}
+						WHERE{?m rdf:type/rdfs:subClassOf* :Modality. ?e1 rdf:type ?m. ?e1 (:is-equivalent-to|^:is-equivalent-to)+ ?e2}"""^^xsd:string].
+
+
+#If an obligation is either complied with or violated, all its equivalent obligations are.
+[rdf:type :InferenceRule;
+	:has-sparql-code """CONSTRUCT{[rdf:type :true,:hold; rdf:subject ?e2; rdf:predicate rdf:type; rdf:object :Obligatory] ?cv ?r2}
+						WHERE{?r1 ?cv ?r2. FILTER((?cv=:is-complied-with-by)||(?cv=:is-violated-by))
+							  ?r1 rdf:type :true,:hold; rdf:subject ?e1; rdf:predicate rdf:type; rdf:object :Obligatory.
+							  ?e1 (:is-equivalent-to|^:is-equivalent-to)+ ?e2.
+							  NOT EXISTS{[rdf:type :true,:hold; rdf:subject ?e2; rdf:predicate rdf:type; rdf:object :Obligatory] ?cv ?r2}}"""^^xsd:string].

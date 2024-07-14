@@ -1,0 +1,66 @@
+@prefix : <https://w3id.org/ontology/conflict-tolerantdeontictraditionalscheme#> .
+@prefix : <https://w3id.org/ontology/conflict-tolerantdeontictraditionalscheme#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix soa: <https://w3id.org/ontology/conflict-tolerantdeontictraditionalscheme/soa#> .
+@base <https://w3id.org/ontology/conflict-tolerantdeontictraditionalscheme#> .
+
+
+########################################################################################################################################
+# Description:
+#---------------------------------------------------------------------------------------------------------------------------------------
+#
+#  This example contains an obligation and a fact:
+#  - (1) "John is obliged to pay £100 to Bill."
+#  - (2) The penalty for the obligation in (1) is that "John is obliged to leave Bill's apartment".
+#  - (3) "Jack does not own money."
+#  Furthermore, it contains a rule stating that:
+#  - (4) If an individual does not own money, then s/he does not pay.
+#
+#  As in Example2.ttl, from (3) the rule in (4) infers that (5) "John does not pay". Then, from (1) and (5) the first rule in the 
+#  file VaP.ttl infers that (1) is violated by (5).
+#
+#  From the fact that (1) is violated by (5), the second rule in the file VaP.ttl infers that the penalty of (1), i.e., (2), holds 
+#  obligatory: John is obliged to leave Bill's apartment.
+#
+########################################################################################################################################
+
+
+########################################################################################################################################
+# Eventuality types and thematic roles
+########################################################################################################################################
+
+soa:Pay rdf:type rdfs:Class, :Eventuality.
+soa:Own rdf:type rdfs:Class, :Eventuality.
+soa:Leave rdf:type rdfs:Class, :Eventuality.
+soa:has-agent rdf:type rdf:Property, :ThematicRole.
+soa:has-object rdf:type rdf:Property, :ThematicRole.
+soa:has-instrument rdf:type rdf:Property, :ThematicRole.
+soa:has-recipient rdf:type rdf:Property, :ThematicRole.
+
+########################################################################################################################################
+# Input facts:
+########################################################################################################################################
+
+#John is obliged to pay £100 to Bill
+soa:epoj rdf:type :Obligatory, soa:Pay; soa:has-agent soa:John; soa:has-object soa:100pounds; soa:has-recipient soa:Bill.
+
+#If John does not pay £100 to Bill, this penalty applies: John is obliged to leave Bill's house.
+soa:epoj :has-penalty soa:pepoj.
+soa:pepoj rdf:type soa:Leave; soa:has-agent soa:John; soa:has-object soa:BillApt.
+[rdf:type :true; rdf:subject soa:pepoj; rdf:predicate rdf:type; rdf:object :Obligatory].
+
+#John does not own any money:
+soa:r rdf:type :false,:hold; rdf:subject soa:eojm; rdf:predicate rdf:type; rdf:object :Rexist. 
+soa:eojm rdf:type soa:Own; soa:has-agent soa:John; soa:has-object soa:money.
+
+#If an individual does not own money, then s/he does not pay.
+[rdf:type :InferenceRule;
+	:has-sparql-code """CONSTRUCT{[rdf:type :false,:hold; rdf:subject [rdf:type soa:Pay; soa:has-agent ?a]; rdf:predicate rdf:type; rdf:object :Rexist]}
+						WHERE{?ro rdf:type :false,:hold; rdf:subject ?eo; rdf:predicate rdf:type; rdf:object :Rexist. 
+							  ?eo rdf:type soa:Own; soa:has-agent ?a; soa:has-object soa:money
+							  NOT EXISTS{?rp rdf:type :false,:hold; rdf:subject ?p; rdf:predicate rdf:type; rdf:object :Rexist.
+										 ?p rdf:type soa:Pay; soa:has-agent ?a}}"""^^xsd:string].
+
