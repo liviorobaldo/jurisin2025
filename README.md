@@ -18,7 +18,7 @@ If you have Java installed, simply download all files from this repository and w
 </p>
 
 <p align="center">
-<i>java -cp .;./lib/* -Dfile.encoding=utf-8 ctDTSreasonerPlusViolationsAndPenalties ctDTS.ttl ./Examples/Example1.ttl inferredABox.ttl</i>
+<i>java -cp .;./lib/* -Dfile.encoding=utf-8 ctDTSreasonerPlusViolationsAndPenalties<br> ctDTS.ttl VaP.ttl ./Examples/Example1.ttl inferredABox.ttl</i>
 </p>
 
 <p align="justify">
